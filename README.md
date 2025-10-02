@@ -80,7 +80,7 @@ EcoPoint/
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/EcoPoint.git
+git clone https://github.com/Git-Rexdev/EcoPoint.git
 cd EcoPoint
 ```
 
