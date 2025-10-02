@@ -1,0 +1,227 @@
+import { User, RecyclingCenter, RecyclingRecord, Pickup, Achievement, RecyclingGuide } from '@/types';
+
+export const mockUser: User = {
+  id: '1',
+  name: 'Alex Green',
+  email: 'alex.green@example.com',
+  avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alex',
+  points: 2450,
+  level: 8,
+  totalRecycled: 145.5,
+};
+
+export const mockRecyclingCenters: RecyclingCenter[] = [
+  {
+    id: '1',
+    name: 'EcoHub Central',
+    address: '123 Green Street, Eco City',
+    latitude: 40.7128,
+    longitude: -74.006,
+    acceptedMaterials: ['plastic', 'paper', 'glass', 'metal'],
+    rating: 4.8,
+    distance: 1.2,
+    hours: 'Mon-Sat: 8AM-6PM',
+    phone: '+1 (555) 123-4567',
+  },
+  {
+    id: '2',
+    name: 'Recycling Station North',
+    address: '456 Recycle Ave, Green Town',
+    latitude: 40.7580,
+    longitude: -73.9855,
+    acceptedMaterials: ['electronics', 'batteries', 'metal'],
+    rating: 4.5,
+    distance: 2.8,
+    hours: 'Mon-Fri: 9AM-5PM',
+    phone: '+1 (555) 234-5678',
+  },
+  {
+    id: '3',
+    name: 'Community Drop-off Point',
+    address: '789 Earth Lane, Sustainability City',
+    latitude: 40.6782,
+    longitude: -73.9442,
+    acceptedMaterials: ['paper', 'cardboard', 'organic'],
+    rating: 4.6,
+    distance: 3.5,
+    hours: '24/7',
+  },
+];
+
+export const mockRecyclingRecords: RecyclingRecord[] = [
+  {
+    id: '1',
+    userId: '1',
+    type: 'plastic',
+    weight: 5.2,
+    points: 52,
+    date: '2025-09-28',
+    centerId: '1',
+    status: 'completed',
+  },
+  {
+    id: '2',
+    userId: '1',
+    type: 'paper',
+    weight: 12.5,
+    points: 125,
+    date: '2025-09-25',
+    centerId: '1',
+    status: 'completed',
+  },
+  {
+    id: '3',
+    userId: '1',
+    type: 'glass',
+    weight: 8.3,
+    points: 83,
+    date: '2025-09-20',
+    centerId: '2',
+    status: 'completed',
+  },
+  {
+    id: '4',
+    userId: '1',
+    type: 'metal',
+    weight: 3.7,
+    points: 74,
+    date: '2025-09-15',
+    status: 'pending',
+  },
+];
+
+export const mockPickups: Pickup[] = [
+  {
+    id: '1',
+    userId: '1',
+    scheduledDate: '2025-10-02',
+    address: '123 My Street, My City',
+    wasteTypes: ['plastic', 'paper'],
+    status: 'scheduled',
+    notes: 'Leave by front door',
+  },
+  {
+    id: '2',
+    userId: '1',
+    scheduledDate: '2025-09-28',
+    address: '123 My Street, My City',
+    wasteTypes: ['glass'],
+    status: 'completed',
+  },
+];
+
+export const mockAchievements: Achievement[] = [
+  {
+    id: '1',
+    title: 'First Steps',
+    description: 'Complete your first recycling',
+    icon: '🌱',
+    pointsRequired: 10,
+    unlocked: true,
+  },
+  {
+    id: '2',
+    title: 'Eco Warrior',
+    description: 'Recycle 100kg of materials',
+    icon: '🛡️',
+    pointsRequired: 1000,
+    unlocked: true,
+  },
+  {
+    id: '3',
+    title: 'Planet Saver',
+    description: 'Reach 2000 points',
+    icon: '🌍',
+    pointsRequired: 2000,
+    unlocked: true,
+  },
+  {
+    id: '4',
+    title: 'Master Recycler',
+    description: 'Recycle all material types',
+    icon: '♻️',
+    pointsRequired: 5000,
+    unlocked: false,
+  },
+];
+
+export const mockRecyclingGuides: RecyclingGuide[] = [
+  {
+    id: '1',
+    category: 'Plastic',
+    title: 'Plastic Bottles & Containers',
+    description: 'Clean plastic bottles, containers, and packaging',
+    recyclable: true,
+    tips: [
+      'Rinse containers before recycling',
+      'Remove caps and labels when possible',
+      'Check for recycling numbers 1, 2, and 5',
+    ],
+    icon: '🍼',
+  },
+  {
+    id: '2',
+    category: 'Paper',
+    title: 'Paper & Cardboard',
+    description: 'Newspapers, magazines, cardboard boxes',
+    recyclable: true,
+    tips: [
+      'Keep paper dry',
+      'Flatten cardboard boxes',
+      'Remove plastic windows from envelopes',
+    ],
+    icon: '📄',
+  },
+  {
+    id: '3',
+    category: 'Glass',
+    title: 'Glass Bottles & Jars',
+    description: 'Glass containers and bottles',
+    recyclable: true,
+    tips: [
+      'Rinse before recycling',
+      'Remove metal lids',
+      'Keep different colors separate if possible',
+    ],
+    icon: '🫙',
+  },
+  {
+    id: '4',
+    category: 'Metal',
+    title: 'Aluminum & Steel Cans',
+    description: 'Beverage cans and food tins',
+    recyclable: true,
+    tips: [
+      'Rinse cans clean',
+      'Remove labels if possible',
+      'Crush to save space',
+    ],
+    icon: '🥫',
+  },
+  {
+    id: '5',
+    category: 'Electronics',
+    title: 'Electronic Waste',
+    description: 'Old phones, computers, batteries',
+    recyclable: true,
+    tips: [
+      'Take to specialized e-waste centers',
+      'Never throw in regular trash',
+      'Erase personal data first',
+    ],
+    icon: '📱',
+  },
+  {
+    id: '6',
+    category: 'Organic',
+    title: 'Food Waste & Compost',
+    description: 'Fruit peels, vegetable scraps, coffee grounds',
+    recyclable: true,
+    tips: [
+      'Start a compost bin',
+      'Avoid meat and dairy in home compost',
+      'Use compost for garden soil',
+    ],
+    icon: '🍎',
+  },
+];
