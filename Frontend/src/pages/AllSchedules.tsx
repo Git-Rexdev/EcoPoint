@@ -151,22 +151,31 @@ export default function AllSchedules() {
                   </div>
                 </div>
                 <div className="flex flex-col items-end gap-2">
-                  <Badge variant={pickup.status === 'completed' ? 'default' : 'secondary'}>
-                    {pickup.status}
-                  </Badge>
-                  {pickup.status !== 'completed' && (
-                    <Button 
-                      size="sm" 
-                      disabled={updatingId === pickup._id} 
-                      onClick={() => markComplete(pickup._id)}
-                    >
-                      {updatingId === pickup._id ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        'Mark Complete'
-                      )}
-                    </Button>
-                  )}
+                  {(() => {
+                    const status = pickup.status?.toLowerCase() || '';
+                    const isCompleted = status === 'completed' || status === 'approved';
+                    
+                    return (
+                      <>
+                        <Badge variant={isCompleted ? 'default' : 'secondary'}>
+                          {status === 'approved' ? 'APPROVED' : pickup.status?.toUpperCase() || 'UNKNOWN'}
+                        </Badge>
+                        {!isCompleted && (
+                          <Button 
+                            size="sm" 
+                            disabled={updatingId === pickup._id} 
+                            onClick={() => markComplete(pickup._id)}
+                          >
+                            {updatingId === pickup._id ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              'Mark Complete'
+                            )}
+                          </Button>
+                        )}
+                      </>
+                    );
+                  })()}
                 </div>
               </div>
             </Card>
