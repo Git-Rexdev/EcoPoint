@@ -7,7 +7,7 @@ export default function Team() {
     {
       name: 'Manmohan',
       role: 'Developer',
-      description: 'Full-stack developer passionate about creating sustainable technology solutions',
+      description: 'AI/ML Engineer & Full-stack developer passionate about creating sustainable technology solutions',
       github: 'Git-Rexdev',
       avatar: 'M',
       image: '/manmohan.jpg',           
