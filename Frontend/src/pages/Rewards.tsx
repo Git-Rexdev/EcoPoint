@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Trophy, Gift, Lock, Star, TrendingUp, Loader2, Copy, CheckCircle, Sparkles, PartyPopper } from 'lucide-react';
+import LevelIcon from '@/components/ui/level-icon';
 import { pointsAPI, couponsAPI } from '@/lib/api';
 import { toast } from '@/hooks/use-toast';
 import { User, Achievement } from '@/types';
@@ -163,7 +164,7 @@ export default function Rewards() {
             <div>
               <p className="text-white/80 mb-1">Current Level</p>
               <div className="flex items-center gap-3 mb-2">
-                <span className="text-3xl">{getLevelIcon(user.level)}</span>
+                <span className="text-3xl"><LevelIcon level={user.level} className="w-8 h-8" /></span>
                 <div>
                   <h2 className="text-2xl font-bold">Level {user.level}</h2>
                   <p className="text-white/90 text-sm">{getLevelTitle(user.level)}</p>

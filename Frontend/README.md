@@ -19,6 +19,7 @@ EcoPoint is a comprehensive waste management platform that connects users with r
 - **Pickup Scheduling**: Schedule waste collection at your convenience  
 - **Guide**: Educational resources on waste management and recycling
 - **Rewards**: Earn points and rewards for sustainable practices
+- **Achievements**: Complete challenges and unlock rewards for recycling milestones
 - **Profile Management**: Manage user account and preferences
 - **Schedule Management**: View and manage all pickup schedules
 - **Authentication**: Secure login and registration system
@@ -114,6 +115,7 @@ src/
 │   ├── Pickup.tsx      # Pickup scheduling
 │   ├── Guide.tsx       # Educational guide
 │   ├── Rewards.tsx     # Rewards system
+│   ├── Achievements.tsx # Achievement system
 │   ├── Profile.tsx     # User profile
 │   ├── Login.tsx       # Authentication
 │   ├── Register.tsx    # User registration
@@ -197,7 +199,38 @@ SOFTWARE.
 
 **Manmohan & Piyush**
 
-- GitHub: [@ByteSmithTheDev](https://github.com/ByteSmithTheDev) [@RedDev](https://github.com/Git-Rexdev)   
+## Android App
+
+An Android build of EcoPoint is included in this repository for convenient testing and demonstrations.
+
+- APK path: `android/EcoPoint.apk`
+- Supported features: Dashboard, Centers lookup, Pickup scheduling, Rewards, Profile, Authentication (the mobile package provides the core user flows available in the web frontend).
+
+Installation (on device)
+
+- Copy the APK to your device and open it from a file manager to install. Make sure "Install unknown apps" or "Allow from this source" is enabled for the installer app.
+
+Install using ADB (PowerShell)
+
+```powershell
+# Install or replace the app on a connected device or emulator
+adb install -r .\android\EcoPoint.apk
+```
+
+Run on an Android emulator
+
+- Start an Android emulator (Android Studio) then run the `adb install -r` command above to install the APK onto the emulator.
+
+
+Compatibility & notes
+
+- The APK is intended for typical modern Android devices. Android 8.0 / API 26+ is recommended; older devices may encounter installation or runtime issues.
+- If installation fails, check device Android version and view logs with `adb logcat` for troubleshooting.
+- The web frontend remains the primary source of truth; the APK is provided mainly for convenience and testing.
+
+If you want, I can add a checksum for the APK, an uninstall command example, or instructions for generating a signed release—tell me which you'd prefer.
+
+- GitHub: [@ByteSmithTheDev](https://github.com/ByteSmithTheDev) [@RedDev](https://github.com/Git-Rexdev)  
 - Project: [EcoPoint-Frontend](https://github.com/ByteSmithTheDev/EcoPoint-Frontend)
 
 *EcoPoint - Making waste management efficient and rewarding*

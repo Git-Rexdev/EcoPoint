@@ -113,6 +113,18 @@ export const couponsAPI = {
   getVerificationHistory: () => api.get('/coupons/verification-history'),
 };
 
+export const leaderboardAPI = {
+  getGlobalLeaderboard: () => api.get('/leaderboard/global'),
+  getMyRank: () => api.get('/leaderboard/me'),
+};
+
+export const achievementsAPI = {
+  getUserAchievements: () => api.get('/achievements'),
+  claimAchievement: (achievementId: string) => api.post(`/achievements/${achievementId}/claim`),
+  getAchievementStats: () => api.get('/achievements/stats'),
+  initializeAchievements: () => api.post('/achievements/initialize'),
+};
+
 // Remove or update other APIs as needed to match backend
 
 export default api;

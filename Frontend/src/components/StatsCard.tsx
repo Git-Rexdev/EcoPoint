@@ -1,10 +1,11 @@
+import React, { ReactNode } from 'react';
 import { LucideIcon } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 
 interface StatsCardProps {
   title: string;
-  value: string | number;
-  icon: LucideIcon;
+  value: ReactNode;
+  icon?: LucideIcon;
   trend?: string;
   color?: 'primary' | 'accent' | 'success' | 'warning';
 }
@@ -27,9 +28,7 @@ export function StatsCard({ title, value, icon: Icon, trend, color = 'primary' }
             <p className="text-xs text-muted-foreground mt-2">{trend}</p>
           )}
         </div>
-        <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${colorClasses[color]} flex items-center justify-center border`}>
-          <Icon size={24} />
-        </div>
+        {/* Icon removed by request - star/icon on the right is intentionally hidden */}
       </div>
     </Card>
   );

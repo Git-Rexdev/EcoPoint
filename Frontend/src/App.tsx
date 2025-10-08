@@ -5,6 +5,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
 import Layout from "./pages/Layout";
+import PublicLayout from "./pages/PublicLayout";
+import ConditionalLayout from "./pages/ConditionalLayout";
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Team from "./pages/Team";
 import Dashboard from "./pages/Dashboard";
 import Centers from "./pages/Centers";
 import Pickup from "./pages/Pickup";
@@ -17,6 +22,8 @@ import Register from "./pages/Register";
 import AllSchedules from "./pages/AllSchedules";
 import Business from "./pages/Business";
 import Ads from "./pages/Ads";
+import Leaderboard from "./pages/Leaderboard";
+import Achievements from "./pages/Achievements";
 import ManageUsers from "./pages/ManageUsers";
 import OverallManagement from "./pages/OverallManagement";
 import TestRole from "./pages/TestRole";
@@ -26,17 +33,13 @@ import { setupTokenExpirationCheck } from "./lib/tokenUtils";
 
 const queryClient = new QueryClient();
 
-// Component to handle token expiration checking
 function TokenExpirationChecker() {
   useEffect(() => {
-    // Set up token expiration checking
     const cleanup = setupTokenExpirationCheck();
-    
-    // Cleanup on unmount
     return cleanup;
   }, []);
-  
-  return null; // This component doesn't render anything
+
+  return null;
 }
 
 function RequireAuth({ children }: { children: JSX.Element }) {
@@ -56,9 +59,15 @@ const App = () => (
       <TokenExpirationChecker />
       <BrowserRouter>
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/" element={
+          <Route path="/" element={<ConditionalLayout />}>
+            <Route index element={<Home />} />
+            <Route path="home" element={<Home />} />
+            <Route path="about" element={<About />} />
+            <Route path="team" element={<Team />} />
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+          </Route>
+          <Route path="/dashboard" element={
             <RequireAuth>
               <Layout />
             </RequireAuth>
@@ -68,6 +77,8 @@ const App = () => (
             <Route path="pickup" element={<Pickup />} />
             <Route path="guide" element={<Guide />} />
             <Route path="rewards" element={<Rewards />} />
+            <Route path="leaderboard" element={<Leaderboard />} />
+            <Route path="achievements" element={<Achievements />} />
             <Route path="profile" element={<Profile />} />
             <Route path="all-schedules" element={<AllSchedules />} />
             <Route path="business" element={<Business />} />

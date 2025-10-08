@@ -4,10 +4,13 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Recycle, Trophy, TrendingUp, Calendar, MapPin, ArrowRight, Loader2, Star, ExternalLink } from 'lucide-react';
-import { pointsAPI, wasteAPI, adsAPI, userAPI } from '@/lib/api';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLeaf, faCrown } from '@fortawesome/free-solid-svg-icons';
+import { pointsAPI, wasteAPI, adsAPI, userAPI, leaderboardAPI, achievementsAPI } from '@/lib/api';
 import { Link } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
-import { calculateLevel, getLevelTitle, getLevelIcon, getLevelBadgeColor } from '@/lib/levelUtils';
+import { calculateLevel, getLevelTitle, getLevelBadgeColor } from '@/lib/levelUtils';
+import LevelIcon from '@/components/ui/level-icon';
 import { calculateEnvironmentalImpact, EnvironmentalImpact } from '@/lib/impactUtils';
 import { User, RecyclingRecord } from '@/types';
 
@@ -29,6 +32,8 @@ export default function Dashboard() {
   const [stats, setStats] = useState<any>(null);
   const [impact, setImpact] = useState<EnvironmentalImpact | null>(null);
   const [ads, setAds] = useState<Ad[]>([]);
+  const [topUsers, setTopUsers] = useState<any[]>([]);
+  const [recentAchievements, setRecentAchievements] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -38,11 +43,13 @@ export default function Dashboard() {
   const loadData = async () => {
     try {
       setLoading(true);
-      const [userRes, pointsRes, wasteRes, adsRes] = await Promise.all([
+      const [userRes, pointsRes, wasteRes, adsRes, leaderboardRes, achievementsRes] = await Promise.all([
         userAPI.getProfile(),
         pointsAPI.getBalance(),
         wasteAPI.getMyPickups(),
         adsAPI.getAds(),
+        leaderboardAPI.getGlobalLeaderboard(),
+        achievementsAPI.getUserAchievements().catch(() => ({ data: { achievements: [] } })),
       ]);
       // Calculate totalRecycled from all user's waste submissions
       const wasteList = Array.isArray(wasteRes.data) ? wasteRes.data : [];
@@ -87,6 +94,14 @@ export default function Dashboard() {
         monthlyRecycled: 0
       }); 
       setAds(adsRes.data.items || []);
+      setTopUsers(leaderboardRes.data.leaderboard.slice(0, 3) || []);
+      
+      // Get recent unlocked but unclaimed achievements
+      const achievements = achievementsRes.data.achievements || [];
+      const recentUnlocked = achievements
+        .filter(ach => ach.unlocked && !ach.claimed)
+        .slice(0, 3);
+      setRecentAchievements(recentUnlocked);
     } catch (error: any) {
       console.error('Failed to load dashboard data:', error);
       toast({
@@ -123,8 +138,9 @@ export default function Dashboard() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-foreground mb-2">
-          Welcome back, {user.name}! 🌿
+        <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-2">
+          <span>Welcome back, {user.name}!</span>
+          <FontAwesomeIcon icon={faLeaf} className="text-green-500 w-5 h-5" />
         </h1>
         <p className="text-muted-foreground">
           Your recycling journey is making a real impact
@@ -149,7 +165,7 @@ export default function Dashboard() {
         />
         <StatsCard
           title="Current Level"
-          value={`${getLevelIcon(user.level)} ${user.level}`}
+          value={<><LevelIcon level={user.level} className="inline mr-1" /> {user.level}</>}
           icon={TrendingUp}
           trend={`${getLevelTitle(user.level)} • ${stats.pointsToNextLevel || 0} pts to next`}
           color="success"
@@ -162,6 +178,66 @@ export default function Dashboard() {
           color="warning"
         />
       </div>
+
+      {/* Quick Achievements Preview */}
+      <Card className="p-6 bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+            <Trophy className="text-yellow-600" size={24} />
+            Ready to Claim!
+          </h2>
+          <Link to="/dashboard/achievements">
+            <Button variant="ghost" size="sm">
+              View All <ArrowRight size={16} className="ml-2" />
+            </Button>
+          </Link>
+        </div>
+        
+        {recentAchievements.length > 0 ? (
+          <div className="space-y-3">
+            {recentAchievements.map((achievement) => (
+              <div key={achievement._id} className="flex items-center gap-3 p-3 rounded-lg bg-white/60 border border-yellow-200">
+                <div className="w-10 h-10 rounded-full bg-yellow-500 flex items-center justify-center">
+                  <Trophy size={20} className="text-white" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-foreground text-sm">{achievement.title}</h4>
+                  <p className="text-xs text-muted-foreground">{achievement.description}</p>
+                </div>
+                <div className="text-right">
+                  <div className="flex items-center gap-1 text-yellow-600 font-bold text-sm">
+                    <Star size={12} />
+                    +{achievement.pointsReward}
+                  </div>
+                  <p className="text-xs text-muted-foreground">Ready!</p>
+                </div>
+              </div>
+            ))}
+            <Link to="/dashboard/achievements">
+              <Button size="sm" className="w-full bg-yellow-600 hover:bg-yellow-700">
+                <Trophy size={16} className="mr-2" />
+                Claim All Rewards
+              </Button>
+            </Link>
+          </div>
+        ) : (
+          <div className="text-center py-4">
+            <div className="w-16 h-16 rounded-full bg-yellow-100 flex items-center justify-center mx-auto mb-3">
+              <Trophy size={32} className="text-yellow-600" />
+            </div>
+            <h3 className="text-lg font-medium text-foreground mb-2">Unlock Your Potential!</h3>
+            <p className="text-muted-foreground text-sm mb-4">
+              Complete recycling activities to earn achievements and rewards
+            </p>
+            <Link to="/dashboard/achievements">
+              <Button size="sm" className="bg-yellow-600 hover:bg-yellow-700">
+                <Trophy size={16} className="mr-2" />
+                View Achievements
+              </Button>
+            </Link>
+          </div>
+        )}
+      </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Recent Activity */}
@@ -294,6 +370,13 @@ export default function Dashboard() {
                 What Can I Recycle?
               </Button>
             </Link>
+            
+            <Link to="/dashboard/achievements">
+              <Button className="w-full justify-start" variant="outline" size="lg">
+                <Trophy size={20} className="mr-3" />
+                View Achievements
+              </Button>
+            </Link>
           </div>
 
           {/* Environmental Impact */}
@@ -327,7 +410,7 @@ export default function Dashboard() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${getLevelBadgeColor(user.level)} flex items-center justify-center text-white font-bold text-lg`}>
-                {getLevelIcon(user.level)}
+                <LevelIcon level={user.level} />
               </div>
               <div>
                 <h3 className="font-semibold text-foreground">Level {user.level}</h3>
@@ -357,6 +440,52 @@ export default function Dashboard() {
           </div>
         </div>
       </Card>
+
+      {/* Quick Leaderboard Preview */}
+      {topUsers.length > 0 && (
+        <Card className="p-6 bg-gradient-to-r from-primary/5 to-accent/5">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Trophy className="text-yellow-500 animate-pulse" size={20} />
+              <h2 className="text-lg font-bold text-foreground">Top Eco Warriors</h2>
+            </div>
+            <Link to="/dashboard/leaderboard">
+              <Button size="sm" variant="outline" className="text-xs gap-1">
+                <TrendingUp size={12} />
+                Full Leaderboard
+              </Button>
+            </Link>
+          </div>
+          
+          <div className="space-y-3">
+            {topUsers.slice(0, 3).map((user, index) => (
+              <div key={user.userId} className="flex items-center gap-3 p-3 rounded-lg bg-background/50 hover:bg-background/80 transition-colors">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm ${
+                  index === 0 ? 'bg-yellow-500' : index === 1 ? 'bg-gray-400' : 'bg-amber-600'
+                }`}>
+                  {index === 0 ? '👑' : `#${user.rank}`}
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-foreground text-sm">{user.name}</p>
+                  <p className="text-xs text-muted-foreground">Level {user.level}</p>
+                </div>
+                <div className="text-right">
+                  <p className="font-bold text-primary text-sm">{user.points.toLocaleString()}</p>
+                  <p className="text-xs text-muted-foreground">pts</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          <div className="mt-4 pt-3 border-t border-border">
+            <div className="text-center">
+              <p className="text-xs text-muted-foreground">
+                <span className="text-primary font-medium">Compete now!</span> Recycle more to climb the ranks
+              </p>
+            </div>
+          </div>
+        </Card>
+      )}
 
       {/* Featured Ads */}
       {ads.length > 0 && (

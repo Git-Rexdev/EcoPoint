@@ -8,6 +8,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
+    allowedHosts: ["ecopoint.bytesmith.me"], // ✅ allow your custom domain
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {

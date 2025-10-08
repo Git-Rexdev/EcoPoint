@@ -43,7 +43,7 @@ export default function Login() {
         sessionStorage.removeItem('redirectPath');
         navigate(redirectPath);
       } else {
-        navigate('/');
+        navigate('/dashboard');
       }
     } catch (error: any) {
       toast({

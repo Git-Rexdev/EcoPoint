@@ -138,6 +138,24 @@ const Sidebar = React.forwardRef<
 >(({ side = "left", variant = "sidebar", collapsible = "offcanvas", className, children, ...props }, ref) => {
   const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
 
+  // Mask style to softly fade the outer edge of the sidebar so it dissolves into the background/video.
+  const maskStyle = React.useMemo(() => {
+    const leftMask: React.CSSProperties = {
+      WebkitMaskImage:
+        'linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 86%, rgba(0,0,0,0) 100%)',
+      maskImage:
+        'linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 86%, rgba(0,0,0,0) 100%)',
+    };
+    const rightMask: React.CSSProperties = {
+      WebkitMaskImage:
+        'linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 86%, rgba(0,0,0,0) 100%)',
+      maskImage:
+        'linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 86%, rgba(0,0,0,0) 100%)',
+    };
+
+    return side === "left" ? leftMask : rightMask;
+  }, [side]);
+
   if (collapsible === "none") {
     return (
       <div
@@ -182,7 +200,7 @@ const Sidebar = React.forwardRef<
       {/* This is what handles the sidebar gap on desktop */}
       <div
         className={cn(
-          "relative h-svh w-[--sidebar-width] bg-transparent transition-[width] duration-200 ease-linear",
+          "relative h-svh w-[--sidebar-width] bg-transparent transition-[width] duration-200 ease-linear z-40",
           "group-data-[collapsible=offcanvas]:w-0",
           "group-data-[side=right]:rotate-180",
           variant === "floating" || variant === "inset"
@@ -202,6 +220,7 @@ const Sidebar = React.forwardRef<
             : "group-data-[collapsible=icon]:w-[--sidebar-width-icon] group-data-[side=left]:border-r group-data-[side=right]:border-l",
           className,
         )}
+        style={maskStyle}
         {...props}
       >
         <div

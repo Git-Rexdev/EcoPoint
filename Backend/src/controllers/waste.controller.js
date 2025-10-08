@@ -18,11 +18,43 @@ const submitSchema = z.object({
 export async function submitWaste(req, res, next) {
   try {
     const parsed = submitSchema.parse({ body: req.body });
+
+    // Find user
+    const user = await User.findById(req.user.sub);
+    if (!user) return res.status(404).json({ message: 'User not found.' });
+
+    // Award 10 points per kg
+    const pts = Math.round(parsed.body.weightKg * 10);
+
+    // Create submission as approved and record awarded points
     const sub = await WasteSubmission.create({
       userId: req.user.sub,
-      ...parsed.body
+      ...parsed.body,
+      status: 'APPROVED',
+      pointsAwarded: pts
     });
-    res.status(201).json({ id: sub._id.toString(), status: sub.status });
+
+    // Update user points and total earned
+    user.points = (user.points || 0) + pts;
+    user.totalPointsEarned = (user.totalPointsEarned || 0) + pts;
+
+    // Update level if applicable
+    const levelUpdate = user.updateLevel();
+
+    // Save submission, user and ledger entry
+    await Promise.all([
+      sub.save(),
+      user.save(),
+      PointLedger.create({ userId: user._id, type: 'EARN', amount: pts, ref: sub._id.toString(), note: `Waste ${parsed.body.type} ${parsed.body.weightKg}kg` })
+    ]);
+
+    const response = { id: sub._id.toString(), status: sub.status, pointsAwarded: pts };
+    if (levelUpdate?.leveledUp) {
+      response.leveledUp = true;
+      response.newLevel = levelUpdate.newLevel;
+    }
+
+    res.status(201).json(response);
   } catch (e) { next(e); }
 }
 

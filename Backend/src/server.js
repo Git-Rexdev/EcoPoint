@@ -14,6 +14,8 @@ import { router as wasteRouter } from './routes/waste.routes.js';
 import { router as pointsRouter } from './routes/points.routes.js';
 import { router as couponRouter } from './routes/coupon.routes.js';
 import { router as userRouter } from './routes/user.routes.js';
+import { router as leaderboardRouter } from './routes/leaderboard.routes.js';
+import { router as achievementRouter } from './routes/achievement.routes.js';
 
 import { errorHandler } from './utils/error.js';
 
@@ -54,6 +56,8 @@ app.use('/api/waste', wasteRouter);
 app.use('/api/points', pointsRouter);
 app.use('/api/coupons', couponRouter);
 app.use('/api/user', userRouter);
+app.use('/api/leaderboard', leaderboardRouter);
+app.use('/api/achievements', achievementRouter);
 
 app.use(errorHandler);
 

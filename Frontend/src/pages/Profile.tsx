@@ -9,7 +9,8 @@ import { Edit, Mail, Award, TrendingUp, Calendar, Package, Loader2, Gift, Shoppi
 import { pointsAPI, wasteAPI, userAPI, couponsAPI } from '@/lib/api';
 import { toast } from '@/hooks/use-toast';
 import { User, RecyclingRecord } from '@/types';
-import { calculateLevel, getLevelTitle, getLevelIcon, getLevelBadgeColor } from '@/lib/levelUtils';
+import { calculateLevel, getLevelTitle, getLevelBadgeColor } from '@/lib/levelUtils';
+import LevelIcon from '@/components/ui/level-icon';
 import { calculateEnvironmentalImpact, getMaterialColor, EnvironmentalImpact } from '@/lib/impactUtils';
 
 export default function Profile() {
@@ -135,7 +136,7 @@ export default function Profile() {
   const profileStats = [
     { label: 'Total Points', value: (user.points != null ? user.points.toLocaleString() : '0'), icon: Award },
     { label: 'Total Recycled', value: (user.totalRecycled != null ? `${user.totalRecycled.toFixed(1)}kg` : '0kg'), icon: Package },
-    { label: 'Current Level', value: `${getLevelIcon(user.level)} Level ${user.level}`, icon: TrendingUp },
+  { label: 'Current Level', value: <><LevelIcon level={user.level} className="inline mr-1" /> Level {user.level}</>, icon: TrendingUp },
     { label: 'Next Level', value: `${levelInfo.pointsToNextLevel} pts to go`, icon: Calendar },
   ];
 
@@ -187,7 +188,7 @@ export default function Profile() {
           {/* Badges */}
           <div className="flex flex-col sm:flex-row items-center gap-2 flex-wrap">
             <div className={`px-3 py-1 rounded-full bg-gradient-to-r ${getLevelBadgeColor(user.level)} text-white font-medium flex items-center gap-2 text-sm`}>
-              <span>{getLevelIcon(user.level)}</span>
+              <span><LevelIcon level={user.level} className="inline mr-1" /></span>
               <span>Level {user.level}</span>
             </div>
             <Badge variant="secondary" className="px-3 py-1 text-xs">

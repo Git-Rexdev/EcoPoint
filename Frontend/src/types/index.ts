@@ -44,12 +44,25 @@ export interface Pickup {
 }
 
 export interface Achievement {
-  id: string;
+  _id: string;
+  achievementId: string;
   title: string;
   description: string;
-  icon: string;
-  pointsRequired: number;
+  category: 'recycling' | 'environmental' | 'milestone' | 'streak' | 'variety';
+  pointsReward: number;
+  requirement: {
+    type: 'weight' | 'count' | 'streak' | 'variety' | 'co2' | 'trees' | 'water' | 'energy' | 'pickup' | 'level';
+    target: number;
+    unit?: string;
+  };
+  rarity: 'common' | 'rare' | 'epic' | 'legendary';
   unlocked: boolean;
+  claimed: boolean;
+  progress: number;
+  unlockedAt?: string;
+  claimedAt?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface RecyclingGuide {
@@ -60,4 +73,19 @@ export interface RecyclingGuide {
   recyclable: boolean;
   tips: string[];
   icon: string;
+}
+
+export interface LeaderboardEntry {
+  rank: number;
+  userId: string;
+  name: string;
+  points: number;
+  level: number;
+}
+
+export interface LeaderboardData {
+  leaderboard: LeaderboardEntry[];
+  me: LeaderboardEntry & {
+    inTop10: boolean;
+  };
 }
